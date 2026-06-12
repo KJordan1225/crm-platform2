@@ -24,4 +24,19 @@ class Opportunity extends Model
     {
         return $this->belongsTo(Account::class);
     }
+
+    public function tasks()
+    {
+        return $this->morphMany(CrmTask::class, 'taskable');
+    }
+
+    public function notes()
+    {
+        return $this->morphMany(CrmNote::class, 'noteable');
+    }
+
+    public function activities()
+    {
+        return $this->morphMany(CrmActivity::class, 'activityable');
+    }
 }

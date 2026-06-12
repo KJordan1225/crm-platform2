@@ -6,20 +6,24 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('crm_tasks', function (Blueprint $table) {
             $table->id();
+
+            $table->nullableMorphs('taskable');
+
+            $table->string('title');
+            $table->text('description')->nullable();
+            $table->string('status')->default('Open');
+            $table->string('priority')->default('Normal');
+            $table->date('due_date')->nullable();
+            $table->timestamp('completed_at')->nullable();
+
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('crm_tasks');

@@ -145,6 +145,10 @@
             Opportunities
         </a>
 
+        <a href="{{ route('crm-tasks.index') }}" class="{{ request()->routeIs('crm-tasks.*') ? 'active' : '' }}">
+            Tasks
+        </a>
+
         <form method="POST" action="{{ route('logout') }}" class="mt-4">
             @csrf
             <button class="btn btn-outline-light w-100">

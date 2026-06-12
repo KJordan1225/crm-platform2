@@ -7,59 +7,26 @@ use Illuminate\Http\Request;
 
 class CrmActivityController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'activityable_type' => ['required', 'string'],
+            'activityable_id' => ['required', 'integer'],
+            'type' => ['required', 'string', 'max:255'],
+            'subject' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
+            'activity_date' => ['nullable', 'date'],
+        ]);
+
+        CrmActivity::create($validated);
+
+        return back()->with('success', 'Activity logged successfully.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(CrmActivity $crmActivity)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(CrmActivity $crmActivity)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, CrmActivity $crmActivity)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(CrmActivity $crmActivity)
     {
-        //
+        $crmActivity->delete();
+
+        return back()->with('success', 'Activity deleted successfully.');
     }
 }

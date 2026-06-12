@@ -32,4 +32,19 @@ class Account extends Model
     {
         return $this->hasMany(Opportunity::class);
     }
+
+    public function tasks()
+    {
+        return $this->morphMany(CrmTask::class, 'taskable');
+    }
+
+    public function notes()
+    {
+        return $this->morphMany(CrmNote::class, 'noteable');
+    }
+
+    public function activities()
+    {
+        return $this->morphMany(CrmActivity::class, 'activityable');
+    }
 }

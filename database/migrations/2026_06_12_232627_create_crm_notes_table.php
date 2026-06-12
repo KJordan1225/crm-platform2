@@ -6,20 +6,20 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('crm_notes', function (Blueprint $table) {
             $table->id();
+
+            $table->nullableMorphs('noteable');
+
+            $table->string('title')->nullable();
+            $table->text('body');
+
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('crm_notes');
