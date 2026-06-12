@@ -3,63 +3,126 @@
 namespace App\Http\Controllers;
 
 use App\Models\Lead;
+use App\Models\Account;
+use App\Models\Contact;
+use App\Models\Opportunity;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class LeadController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $leads = Lead::latest()->paginate(10);
+
+        return view('leads.index', compact('leads'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        return view('leads.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'company' => ['nullable', 'string', 'max:255'],
+            'first_name' => ['required', 'string', 'max:255'],
+            'last_name' => ['required', 'string', 'max:255'],
+            'email' => ['nullable', 'email', 'max:255'],
+            'phone' => ['nullable', 'string', 'max:255'],
+            'status' => ['required', 'string', 'max:255'],
+            'source' => ['nullable', 'string', 'max:255'],
+            'industry' => ['nullable', 'string', 'max:255'],
+            'estimated_value' => ['nullable', 'numeric', 'min:0'],
+            'notes' => ['nullable', 'string'],
+        ]);
+
+        Lead::create($validated);
+
+        return redirect()
+            ->route('leads.index')
+            ->with('success', 'Lead created successfully.');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Lead $lead)
     {
-        //
+        return view('leads.show', compact('lead'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Lead $lead)
     {
-        //
+        return view('leads.edit', compact('lead'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Lead $lead)
     {
-        //
+        $validated = $request->validate([
+            'company' => ['nullable', 'string', 'max:255'],
+            'first_name' => ['required', 'string', 'max:255'],
+            'last_name' => ['required', 'string', 'max:255'],
+            'email' => ['nullable', 'email', 'max:255'],
+            'phone' => ['nullable', 'string', 'max:255'],
+            'status' => ['required', 'string', 'max:255'],
+            'source' => ['nullable', 'string', 'max:255'],
+            'industry' => ['nullable', 'string', 'max:255'],
+            'estimated_value' => ['nullable', 'numeric', 'min:0'],
+            'notes' => ['nullable', 'string'],
+        ]);
+
+        $lead->update($validated);
+
+        return redirect()
+            ->route('leads.index')
+            ->with('success', 'Lead updated successfully.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Lead $lead)
     {
-        //
+        $lead->delete();
+
+        return redirect()
+            ->route('leads.index')
+            ->with('success', 'Lead deleted successfully.');
+    }
+
+    public function convert(Lead $lead)
+    {
+        DB::transaction(function () use ($lead) {
+            $account = Account::create([
+                'name' => $lead->company ?: $lead->full_name,
+                'industry' => $lead->industry,
+                'phone' => $lead->phone,
+                'email' => $lead->email,
+                'description' => $lead->notes,
+            ]);
+
+            Contact::create([
+                'account_id' => $account->id,
+                'first_name' => $lead->first_name,
+                'last_name' => $lead->last_name,
+                'email' => $lead->email,
+                'phone' => $lead->phone,
+                'notes' => $lead->notes,
+            ]);
+
+            Opportunity::create([
+                'account_id' => $account->id,
+                'name' => 'Opportunity for ' . $account->name,
+                'amount' => $lead->estimated_value ?? 0,
+                'stage' => 'Prospecting',
+                'probability' => 10,
+                'source' => $lead->source,
+                'description' => $lead->notes,
+            ]);
+
+            $lead->update([
+                'status' => 'Converted',
+            ]);
+        });
+
+        return redirect()
+            ->route('leads.index')
+            ->with('success', 'Lead converted into Account, Contact, and Opportunity.');
     }
 }

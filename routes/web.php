@@ -24,8 +24,10 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::resource('accounts', AccountController::class);
     Route::resource('contacts', ContactController::class);
+    Route::post('/leads/{lead}/convert', [LeadController::class, 'convert'])
+        ->name('leads.convert');
     Route::resource('leads', LeadController::class);
-    Route::resource('opportunities', OpportunityController::class);
+    Route::resource('opportunities', OpportunityController::class);   
 });
 
 require __DIR__.'/auth.php';
