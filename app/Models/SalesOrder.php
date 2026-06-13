@@ -5,34 +5,37 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Quote extends Model
+class SalesOrder extends Model
 {
     use HasFactory;
 
     protected $fillable = [
+        'quote_id',
         'opportunity_id',
         'account_id',
         'contact_id',
-        'price_book_id',
-        'quote_number',
-        'name',
+        'order_number',
         'status',
-        'expiration_date',
+        'order_date',
         'subtotal',
         'discount_total',
         'tax_total',
         'grand_total',
-        'terms',
         'notes',
     ];
 
     protected $casts = [
-        'expiration_date' => 'date',
+        'order_date' => 'date',
         'subtotal' => 'decimal:2',
         'discount_total' => 'decimal:2',
         'tax_total' => 'decimal:2',
         'grand_total' => 'decimal:2',
     ];
+
+    public function quote()
+    {
+        return $this->belongsTo(Quote::class);
+    }
 
     public function opportunity()
     {
@@ -49,23 +52,23 @@ class Quote extends Model
         return $this->belongsTo(Contact::class);
     }
 
-    public function priceBook()
-    {
-        return $this->belongsTo(PriceBook::class);
-    }
-
     public function lineItems()
     {
-        return $this->hasMany(QuoteLineItem::class);
+        return $this->hasMany(SalesOrderLineItem::class);
+    }
+
+    public static function nextOrderNumber(): string
+    {
+        $nextId = (int) static::max('id') + 1;
+
+        return 'SO-' . str_pad((string) $nextId, 6, '0', STR_PAD_LEFT);
     }
 
     public function recalculateTotals(): void
     {
         $this->loadMissing('lineItems');
 
-        $subtotal = $this->lineItems->sum(function ($line) {
-            return $line->quantity * $line->unit_price;
-        });
+        $subtotal = $this->lineItems->sum(fn ($line) => $line->quantity * $line->unit_price);
 
         $discountTotal = $this->lineItems->sum(function ($line) {
             $base = $line->quantity * $line->unit_price;
@@ -78,30 +81,11 @@ class Quote extends Model
             return ($base - $discount) * ($line->tax_percent / 100);
         });
 
-        $grandTotal = $subtotal - $discountTotal + $taxTotal;
-
         $this->update([
             'subtotal' => $subtotal,
             'discount_total' => $discountTotal,
             'tax_total' => $taxTotal,
-            'grand_total' => $grandTotal,
+            'grand_total' => $subtotal - $discountTotal + $taxTotal,
         ]);
-    }
-
-    public static function nextQuoteNumber(): string
-    {
-        $nextId = (int) static::max('id') + 1;
-
-        return 'Q-' . str_pad((string) $nextId, 6, '0', STR_PAD_LEFT);
-    }
-
-    public function salesOrders()
-    {
-        return $this->hasMany(SalesOrder::class);
-    }
-
-    public function invoices()
-    {
-        return $this->hasMany(Invoice::class);
     }
 }

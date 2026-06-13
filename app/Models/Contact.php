@@ -55,4 +55,14 @@ class Contact extends Model
     {
         return $this->hasMany(Quote::class);
     }
+
+    public function salesOrders()
+    {
+        return $this->hasMany(SalesOrder::class);
+    }
+
+    public function invoices()
+    {
+        return $this->hasMany(Invoice::class);
+    }
 }
