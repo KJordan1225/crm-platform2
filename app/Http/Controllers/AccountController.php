@@ -7,12 +7,34 @@ use Illuminate\Http\Request;
 
 class AccountController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $accounts = Account::latest()->paginate(10);
+        $accounts = Account::query()
+            ->when($request->filled('search'), function ($query) use ($request) {
+                $search = $request->search;
 
-        return view('accounts.index', compact('accounts'));
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                        ->orWhere('industry', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%")
+                        ->orWhere('phone', 'like', "%{$search}%");
+                });
+            })
+            ->when($request->filled('industry'), function ($query) use ($request) {
+                $query->where('industry', $request->industry);
+            })
+            ->latest()
+            ->paginate(10)
+            ->withQueryString();
+
+        $industries = Account::whereNotNull('industry')
+            ->distinct()
+            ->orderBy('industry')
+            ->pluck('industry');
+
+        return view('accounts.index', compact('accounts', 'industries'));
     }
+
 
     public function create()
     {

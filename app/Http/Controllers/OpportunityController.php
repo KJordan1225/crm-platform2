@@ -8,12 +8,40 @@ use Illuminate\Http\Request;
 
 class OpportunityController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $opportunities = Opportunity::with('account')->latest()->paginate(10);
+        $opportunities = Opportunity::with('account')
+            ->when($request->filled('search'), function ($query) use ($request) {
+                $search = $request->search;
 
-        return view('opportunities.index', compact('opportunities'));
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                        ->orWhere('source', 'like', "%{$search}%")
+                        ->orWhereHas('account', function ($accountQuery) use ($search) {
+                            $accountQuery->where('name', 'like', "%{$search}%");
+                        });
+                });
+            })
+            ->when($request->filled('stage'), function ($query) use ($request) {
+                $query->where('stage', $request->stage);
+            })
+            ->latest()
+            ->paginate(10)
+            ->withQueryString();
+
+        $stages = [
+            'Prospecting',
+            'Qualification',
+            'Needs Analysis',
+            'Proposal',
+            'Negotiation',
+            'Closed Won',
+            'Closed Lost',
+        ];
+
+        return view('opportunities.index', compact('opportunities', 'stages'));
     }
+
 
     public function create()
     {

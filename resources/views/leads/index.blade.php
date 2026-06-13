@@ -11,6 +11,33 @@
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
+    @include('crm_shared.search_bar', [
+        'action' => route('leads.index'),
+        'placeholder' => 'Search leads...',
+        'filters' => '
+            <div class="col-md-2">
+                <label class="form-label">Status</label>
+                <select name="status" class="form-select">
+                    <option value="">All Statuses</option>
+                    ' . collect($statuses)->map(function ($status) {
+                        return '<option value="'.$status.'" '.(request('status') === $status ? 'selected' : '').'>'.$status.'</option>';
+                    })->implode('') . '
+                </select>
+            </div>
+
+            <div class="col-md-2">
+                <label class="form-label">Source</label>
+                <select name="source" class="form-select">
+                    <option value="">All Sources</option>
+                    ' . collect($sources)->map(function ($source) {
+                        return '<option value="'.$source.'" '.(request('source') === $source ? 'selected' : '').'>'.$source.'</option>';
+                    })->implode('') . '
+                </select>
+            </div>
+        '
+    ])
+
+
     <div class="card shadow-sm">
         <div class="card-body">
             <table class="table table-hover align-middle">

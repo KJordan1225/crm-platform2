@@ -10,6 +10,29 @@
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
+    @include('crm_shared.search_bar', [
+        'action' => route('accounts.index'),
+        'placeholder' => 'Search accounts by name, industry, email, or phone...'
+    ])
+
+    @section('search_filters')
+    @endsection
+
+    @include('crm_shared.search_bar', [
+        'action' => route('accounts.index'),
+        'placeholder' => 'Search accounts...',
+        'filters' => '
+            <div class="col-md-4">
+                <label class="form-label">Industry</label>
+                <select name="industry" class="form-select">
+                    <option value="">All Industries</option>
+                    ' . collect($industries)->map(function ($industry) {
+                        return '<option value="'.$industry.'" '.(request('industry') === $industry ? 'selected' : '').'>'.$industry.'</option>';
+                    })->implode('') . '
+                </select>
+            </div>
+        '
+    ])
 
     <div class="card shadow-sm">
         <div class="card-body">

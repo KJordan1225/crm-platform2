@@ -11,6 +11,23 @@
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
+    @include('crm_shared.search_bar', [
+        'action' => route('opportunities.index'),
+        'placeholder' => 'Search opportunities...',
+        'filters' => '
+            <div class="col-md-4">
+                <label class="form-label">Stage</label>
+                <select name="stage" class="form-select">
+                    <option value="">All Stages</option>
+                    ' . collect($stages)->map(function ($stage) {
+                        return '<option value="'.$stage.'" '.(request('stage') === $stage ? 'selected' : '').'>'.$stage.'</option>';
+                    })->implode('') . '
+                </select>
+            </div>
+        '
+    ])
+
+
     <div class="card shadow-sm">
         <div class="card-body">
             <table class="table table-hover align-middle">

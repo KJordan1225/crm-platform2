@@ -11,6 +11,23 @@
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
+    @include('crm_shared.search_bar', [
+        'action' => route('contacts.index'),
+        'placeholder' => 'Search contacts...',
+        'filters' => '
+            <div class="col-md-4">
+                <label class="form-label">Account</label>
+                <select name="account_id" class="form-select">
+                    <option value="">All Accounts</option>
+                    ' . $accounts->map(function ($account) {
+                        return '<option value="'.$account->id.'" '.(request('account_id') == $account->id ? 'selected' : '').'>'.$account->name.'</option>';
+                    })->implode('') . '
+                </select>
+            </div>
+        '
+    ])
+
+
     <div class="card shadow-sm">
         <div class="card-body">
             <table class="table table-hover">

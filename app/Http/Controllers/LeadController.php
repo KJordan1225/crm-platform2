@@ -11,11 +11,43 @@ use Illuminate\Support\Facades\DB;
 
 class LeadController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $leads = Lead::latest()->paginate(10);
+        $leads = Lead::query()
+            ->when($request->filled('search'), function ($query) use ($request) {
+                $search = $request->search;
 
-        return view('leads.index', compact('leads'));
+                $query->where(function ($q) use ($search) {
+                    $q->where('first_name', 'like', "%{$search}%")
+                        ->orWhere('last_name', 'like', "%{$search}%")
+                        ->orWhere('company', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%")
+                        ->orWhere('phone', 'like', "%{$search}%");
+                });
+            })
+            ->when($request->filled('status'), function ($query) use ($request) {
+                $query->where('status', $request->status);
+            })
+            ->when($request->filled('source'), function ($query) use ($request) {
+                $query->where('source', $request->source);
+            })
+            ->latest()
+            ->paginate(10)
+            ->withQueryString();
+
+        $statuses = ['New', 'Working', 'Qualified', 'Unqualified', 'Converted'];
+
+        $sources = [
+            'Website',
+            'Referral',
+            'Cold Call',
+            'Email Campaign',
+            'Social Media',
+            'Trade Show',
+            'Other',
+        ];
+
+        return view('leads.index', compact('leads', 'statuses', 'sources'));
     }
 
     public function create()

@@ -8,12 +8,32 @@ use Illuminate\Http\Request;
 
 class ContactController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $contacts = Contact::with('account')->latest()->paginate(10);
+        $contacts = Contact::with('account')
+            ->when($request->filled('search'), function ($query) use ($request) {
+                $search = $request->search;
 
-        return view('contacts.index', compact('contacts'));
+                $query->where(function ($q) use ($search) {
+                    $q->where('first_name', 'like', "%{$search}%")
+                        ->orWhere('last_name', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%")
+                        ->orWhere('phone', 'like', "%{$search}%")
+                        ->orWhere('mobile', 'like', "%{$search}%");
+                });
+            })
+            ->when($request->filled('account_id'), function ($query) use ($request) {
+                $query->where('account_id', $request->account_id);
+            })
+            ->latest()
+            ->paginate(10)
+            ->withQueryString();
+
+        $accounts = Account::orderBy('name')->get();
+
+        return view('contacts.index', compact('contacts', 'accounts'));
     }
+
 
     public function create()
     {

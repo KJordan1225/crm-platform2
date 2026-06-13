@@ -18,6 +18,7 @@ use App\Http\Controllers\QuoteController;
 use App\Http\Controllers\SalesOrderController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\ReportController;
 
 Route::get('/', function () {
     return redirect()->route('dashboard');
@@ -106,6 +107,9 @@ Route::middleware(['auth'])->group(function () {
 
     Route::resource('payments', PaymentController::class)
         ->only(['index']);
+
+    Route::get('/reports', [ReportController::class, 'index'])
+        ->name('reports.index');
 });
 
 require __DIR__.'/auth.php';
