@@ -11,6 +11,13 @@
         <a href="{{ route('quotes.edit', $quote) }}" class="btn btn-warning">
             Edit Quote
         </a>
+
+        <form action="{{ route('quotes.convert-to-sales-order', $quote) }}" method="POST" class="d-inline">
+            @csrf
+            <button onclick="return confirm('Convert this quote to a sales order?')" class="btn btn-success">
+                Convert to Sales Order
+            </button>
+        </form>
     </div>
 
     @if(session('success'))

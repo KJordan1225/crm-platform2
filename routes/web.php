@@ -15,6 +15,9 @@ use App\Http\Controllers\CampaignMemberController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PriceBookController;
 use App\Http\Controllers\QuoteController;
+use App\Http\Controllers\SalesOrderController;
+use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\PaymentController;
 
 Route::get('/', function () {
     return redirect()->route('dashboard');
@@ -82,6 +85,27 @@ Route::middleware(['auth'])->group(function () {
         ->name('quote-line-items.destroy');
 
     Route::resource('quotes', QuoteController::class);
+
+    Route::post('/quotes/{quote}/convert-to-sales-order', [SalesOrderController::class, 'convertFromQuote'])
+         ->name('quotes.convert-to-sales-order');
+
+    Route::resource('sales-orders', SalesOrderController::class)
+        ->only(['index', 'show']);
+
+    Route::post('/sales-orders/{salesOrder}/convert-to-invoice', [InvoiceController::class, 'convertFromSalesOrder'])
+        ->name('sales-orders.convert-to-invoice');
+
+    Route::resource('invoices', InvoiceController::class)
+        ->only(['index', 'show']);
+
+    Route::post('/invoices/{invoice}/payments', [PaymentController::class, 'store'])
+        ->name('invoices.payments.store');
+
+    Route::delete('/payments/{payment}', [PaymentController::class, 'destroy'])
+        ->name('payments.destroy');
+
+    Route::resource('payments', PaymentController::class)
+        ->only(['index']);
 });
 
 require __DIR__.'/auth.php';

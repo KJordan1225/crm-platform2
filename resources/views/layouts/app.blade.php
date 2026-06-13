@@ -165,6 +165,18 @@
             Quotes
         </a>
 
+        <a href="{{ route('sales-orders.index') }}" class="{{ request()->routeIs('sales-orders.*') ? 'active' : '' }}">
+            Sales Orders
+        </a>
+
+        <a href="{{ route('invoices.index') }}" class="{{ request()->routeIs('invoices.*') ? 'active' : '' }}">
+            Invoices
+        </a>
+
+        <a href="{{ route('payments.index') }}" class="{{ request()->routeIs('payments.*') ? 'active' : '' }}">
+            Payments
+        </a>
+
         <form method="POST" action="{{ route('logout') }}" class="mt-4">
             @csrf
             <button class="btn btn-outline-light w-100">

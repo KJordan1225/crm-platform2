@@ -2,64 +2,49 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Invoice;
 use App\Models\Payment;
 use Illuminate\Http\Request;
 
 class PaymentController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $payments = Payment::with(['invoice', 'account'])
+            ->latest()
+            ->paginate(10);
+
+        return view('payments.index', compact('payments'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function store(Request $request, Invoice $invoice)
     {
-        //
+        $validated = $request->validate([
+            'payment_date' => ['required', 'date'],
+            'amount' => ['required', 'numeric', 'min:0.01'],
+            'method' => ['required', 'string', 'max:255'],
+            'reference_number' => ['nullable', 'string', 'max:255'],
+            'notes' => ['nullable', 'string'],
+        ]);
+
+        Payment::create([
+            'invoice_id' => $invoice->id,
+            'account_id' => $invoice->account_id,
+            'payment_number' => Payment::nextPaymentNumber(),
+            'payment_date' => $validated['payment_date'],
+            'amount' => $validated['amount'],
+            'method' => $validated['method'],
+            'reference_number' => $validated['reference_number'] ?? null,
+            'notes' => $validated['notes'] ?? null,
+        ]);
+
+        return back()->with('success', 'Payment recorded successfully.');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Payment $payment)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Payment $payment)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Payment $payment)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Payment $payment)
     {
-        //
+        $payment->delete();
+
+        return back()->with('success', 'Payment deleted successfully.');
     }
 }

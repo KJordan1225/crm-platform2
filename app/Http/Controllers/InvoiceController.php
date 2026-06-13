@@ -3,63 +3,69 @@
 namespace App\Http\Controllers;
 
 use App\Models\Invoice;
+use App\Models\InvoiceLineItem;
+use App\Models\SalesOrder;
+use App\Models\Product;
 use Illuminate\Http\Request;
 
 class InvoiceController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $invoices = Invoice::with(['account', 'salesOrder'])
+            ->latest()
+            ->paginate(10);
+
+        return view('invoices.index', compact('invoices'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
     public function show(Invoice $invoice)
     {
-        //
+        $invoice->load(['account', 'contact', 'salesOrder', 'quote', 'lineItems', 'payments']);
+
+        $products = Product::where('is_active', true)->orderBy('name')->get();
+
+        return view('invoices.show', compact('invoice', 'products'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Invoice $invoice)
+    public function convertFromSalesOrder(SalesOrder $salesOrder)
     {
-        //
-    }
+        $salesOrder->load('lineItems');
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Invoice $invoice)
-    {
-        //
-    }
+        $invoice = Invoice::create([
+            'sales_order_id' => $salesOrder->id,
+            'quote_id' => $salesOrder->quote_id,
+            'account_id' => $salesOrder->account_id,
+            'contact_id' => $salesOrder->contact_id,
+            'invoice_number' => Invoice::nextInvoiceNumber(),
+            'status' => 'Draft',
+            'invoice_date' => now()->toDateString(),
+            'due_date' => now()->addDays(30)->toDateString(),
+            'subtotal' => $salesOrder->subtotal,
+            'discount_total' => $salesOrder->discount_total,
+            'tax_total' => $salesOrder->tax_total,
+            'grand_total' => $salesOrder->grand_total,
+            'balance_due' => $salesOrder->grand_total,
+            'notes' => 'Created from sales order '.$salesOrder->order_number,
+        ]);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Invoice $invoice)
-    {
-        //
+        foreach ($salesOrder->lineItems as $line) {
+            InvoiceLineItem::create([
+                'invoice_id' => $invoice->id,
+                'product_id' => $line->product_id,
+                'product_name' => $line->product_name,
+                'sku' => $line->sku,
+                'quantity' => $line->quantity,
+                'unit_price' => $line->unit_price,
+                'discount_percent' => $line->discount_percent,
+                'tax_percent' => $line->tax_percent,
+            ]);
+        }
+
+        $salesOrder->update(['status' => 'Invoiced']);
+
+        return redirect()
+            ->route('invoices.show', $invoice)
+            ->with('success', 'Sales order converted to invoice.');
     }
 }
