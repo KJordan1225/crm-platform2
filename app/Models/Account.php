@@ -47,4 +47,9 @@ class Account extends Model
     {
         return $this->morphMany(CrmActivity::class, 'activityable');
     }
+
+    public function quotes()
+    {
+        return $this->hasMany(Quote::class);
+    }
 }

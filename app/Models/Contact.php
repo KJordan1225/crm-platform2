@@ -50,4 +50,9 @@ class Contact extends Model
     {
         return $this->morphMany(CampaignMember::class, 'memberable');
     }
+
+    public function quotes()
+    {
+        return $this->hasMany(Quote::class);
+    }
 }
