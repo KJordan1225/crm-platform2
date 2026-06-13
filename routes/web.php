@@ -12,6 +12,9 @@ use App\Http\Controllers\CrmNoteController;
 use App\Http\Controllers\CrmActivityController;
 use App\Http\Controllers\CampaignController;
 use App\Http\Controllers\CampaignMemberController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\PriceBookController;
+use App\Http\Controllers\QuoteController;
 
 Route::get('/', function () {
     return redirect()->route('dashboard');
@@ -61,6 +64,24 @@ Route::middleware(['auth'])->group(function () {
 
     Route::delete('/campaign-members/{campaignMember}', [CampaignMemberController::class, 'destroy'])
         ->name('campaign-members.destroy');
+
+    Route::resource('products', ProductController::class);
+
+    Route::post('/price-books/{priceBook}/entries', [PriceBookController::class, 'addEntry'])
+        ->name('price-books.entries.store');
+
+    Route::delete('/price-book-entries/{priceBookEntry}', [PriceBookController::class, 'removeEntry'])
+        ->name('price-book-entries.destroy');
+
+    Route::resource('price-books', PriceBookController::class);
+
+    Route::post('/quotes/{quote}/line-items', [QuoteController::class, 'addLineItem'])
+        ->name('quotes.line-items.store');
+
+    Route::delete('/quote-line-items/{quoteLineItem}', [QuoteController::class, 'removeLineItem'])
+        ->name('quote-line-items.destroy');
+
+    Route::resource('quotes', QuoteController::class);
 });
 
 require __DIR__.'/auth.php';

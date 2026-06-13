@@ -153,6 +153,18 @@
             Campaigns
         </a>
 
+        <a href="{{ route('products.index') }}" class="{{ request()->routeIs('products.*') ? 'active' : '' }}">
+            Products
+        </a>
+
+        <a href="{{ route('price-books.index') }}" class="{{ request()->routeIs('price-books.*') ? 'active' : '' }}">
+            Price Books
+        </a>
+
+        <a href="{{ route('quotes.index') }}" class="{{ request()->routeIs('quotes.*') ? 'active' : '' }}">
+            Quotes
+        </a>
+
         <form method="POST" action="{{ route('logout') }}" class="mt-4">
             @csrf
             <button class="btn btn-outline-light w-100">
