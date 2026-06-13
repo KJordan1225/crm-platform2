@@ -39,10 +39,17 @@ class AccountController extends Controller
 
     public function show(Account $account)
     {
-        $account->load(['contacts', 'opportunities']);
+        $account->load([
+            'contacts',
+            'opportunities',
+            'tasks' => fn ($q) => $q->latest(),
+            'notes' => fn ($q) => $q->latest(),
+            'activities' => fn ($q) => $q->latest(),
+        ]);
 
         return view('accounts.show', compact('account'));
     }
+
 
     public function edit(Account $account)
     {

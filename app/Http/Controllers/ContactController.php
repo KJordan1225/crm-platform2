@@ -45,7 +45,12 @@ class ContactController extends Controller
 
     public function show(Contact $contact)
     {
-        $contact->load('account');
+        $contact->load([
+            'account',
+            'tasks' => fn ($q) => $q->latest(),
+            'notes' => fn ($q) => $q->latest(),
+            'activities' => fn ($q) => $q->latest(),
+        ]);
 
         return view('contacts.show', compact('contact'));
     }

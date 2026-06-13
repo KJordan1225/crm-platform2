@@ -20,4 +20,5 @@
         </div>
     </div>
 </div>
+@include('crm_shared.related_panel', ['model' => $opportunity])
 @endsection

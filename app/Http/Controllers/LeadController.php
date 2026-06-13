@@ -47,8 +47,15 @@ class LeadController extends Controller
 
     public function show(Lead $lead)
     {
+        $lead->load([
+            'tasks' => fn ($q) => $q->latest(),
+            'notes' => fn ($q) => $q->latest(),
+            'activities' => fn ($q) => $q->latest(),
+        ]);
+
         return view('leads.show', compact('lead'));
     }
+
 
     public function edit(Lead $lead)
     {

@@ -34,10 +34,9 @@ class CrmTaskController extends Controller
 
         CrmTask::create($validated);
 
-        return redirect()
-            ->route('crm-tasks.index')
-            ->with('success', 'Task created successfully.');
+        return back()->with('success', 'Task created successfully.');
     }
+
 
     public function show(CrmTask $crmTask)
     {

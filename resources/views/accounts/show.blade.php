@@ -36,4 +36,5 @@
         @endforelse
     </ul>
 </div>
+@include('crm_shared.related_panel', ['model' => $account])
 @endsection

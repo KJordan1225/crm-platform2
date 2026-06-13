@@ -44,10 +44,16 @@ class OpportunityController extends Controller
 
     public function show(Opportunity $opportunity)
     {
-        $opportunity->load('account');
+        $opportunity->load([
+            'account',
+            'tasks' => fn ($q) => $q->latest(),
+            'notes' => fn ($q) => $q->latest(),
+            'activities' => fn ($q) => $q->latest(),
+        ]);
 
         return view('opportunities.show', compact('opportunity'));
     }
+
 
     public function edit(Opportunity $opportunity)
     {

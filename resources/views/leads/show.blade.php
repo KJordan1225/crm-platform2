@@ -21,4 +21,5 @@
         </div>
     </div>
 </div>
+@include('crm_shared.related_panel', ['model' => $lead])
 @endsection
