@@ -41,4 +41,9 @@ class Lead extends Model
     {
         return $this->morphMany(CrmActivity::class, 'activityable');
     }
+
+    public function campaignMemberships()
+    {
+        return $this->morphMany(CampaignMember::class, 'memberable');
+    }
 }

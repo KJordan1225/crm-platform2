@@ -10,6 +10,8 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\CrmTaskController;
 use App\Http\Controllers\CrmNoteController;
 use App\Http\Controllers\CrmActivityController;
+use App\Http\Controllers\CampaignController;
+use App\Http\Controllers\CampaignMemberController;
 
 Route::get('/', function () {
     return redirect()->route('dashboard');
@@ -48,6 +50,17 @@ Route::middleware(['auth'])->group(function () {
 
     Route::delete('/crm-activities/{crmActivity}', [CrmActivityController::class, 'destroy'])
         ->name('crm-activities.destroy');
+
+    Route::resource('campaigns', CampaignController::class);
+
+    Route::post('/campaigns/{campaign}/members', [CampaignMemberController::class, 'store'])
+        ->name('campaign-members.store');
+
+    Route::put('/campaign-members/{campaignMember}', [CampaignMemberController::class, 'update'])
+        ->name('campaign-members.update');
+
+    Route::delete('/campaign-members/{campaignMember}', [CampaignMemberController::class, 'destroy'])
+        ->name('campaign-members.destroy');
 });
 
 require __DIR__.'/auth.php';
