@@ -191,9 +191,13 @@
 
     <main class="crm-main">
         <div class="crm-topbar">
-            <div>
-                <strong>Sales CRM Dashboard</strong>
-            </div>
+            <form action="{{ route('search.index') }}" method="GET" style="width: 420px;">
+                <input type="text"
+                    name="search"
+                    class="form-control"
+                    value="{{ request('search') }}"
+                    placeholder="Search CRM...">
+            </form>
 
             <div>
                 {{ auth()->user()->name ?? 'User' }}

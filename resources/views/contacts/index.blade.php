@@ -11,21 +11,19 @@
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    @include('crm_shared.search_bar', [
-        'action' => route('contacts.index'),
-        'placeholder' => 'Search contacts...',
-        'filters' => '
-            <div class="col-md-4">
-                <label class="form-label">Account</label>
-                <select name="account_id" class="form-select">
-                    <option value="">All Accounts</option>
-                    ' . $accounts->map(function ($account) {
-                        return '<option value="'.$account->id.'" '.(request('account_id') == $account->id ? 'selected' : '').'>'.$account->name.'</option>';
-                    })->implode('') . '
-                </select>
-            </div>
-        '
-    ])
+    <x-crm.search-form
+        :action="route('contacts.index')"
+        placeholder="Search contacts by name, email, phone, or mobile..."
+    >
+        <x-crm.select-filter
+            name="account_id"
+            label="Account"
+            default="All Accounts"
+            :options="$accounts->pluck('name', 'id')"
+            class="col-md-4"
+        />
+    </x-crm.search-form>
+
 
 
     <div class="card shadow-sm">

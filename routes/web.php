@@ -19,6 +19,8 @@ use App\Http\Controllers\SalesOrderController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\GlobalSearchController;
+
 
 Route::get('/', function () {
     return redirect()->route('dashboard');
@@ -110,6 +112,9 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/reports', [ReportController::class, 'index'])
         ->name('reports.index');
+
+    Route::get('/search', [GlobalSearchController::class, 'index'])
+        ->name('search.index');
 });
 
 require __DIR__.'/auth.php';

@@ -11,31 +11,27 @@
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    @include('crm_shared.search_bar', [
-        'action' => route('leads.index'),
-        'placeholder' => 'Search leads...',
-        'filters' => '
-            <div class="col-md-2">
-                <label class="form-label">Status</label>
-                <select name="status" class="form-select">
-                    <option value="">All Statuses</option>
-                    ' . collect($statuses)->map(function ($status) {
-                        return '<option value="'.$status.'" '.(request('status') === $status ? 'selected' : '').'>'.$status.'</option>';
-                    })->implode('') . '
-                </select>
-            </div>
+    <x-crm.search-form
+        :action="route('leads.index')"
+        placeholder="Search leads by name, company, email, or phone..."
+    >
+        <x-crm.select-filter
+            name="status"
+            label="Status"
+            default="All Statuses"
+            :options="$statuses"
+            class="col-md-2"
+        />
 
-            <div class="col-md-2">
-                <label class="form-label">Source</label>
-                <select name="source" class="form-select">
-                    <option value="">All Sources</option>
-                    ' . collect($sources)->map(function ($source) {
-                        return '<option value="'.$source.'" '.(request('source') === $source ? 'selected' : '').'>'.$source.'</option>';
-                    })->implode('') . '
-                </select>
-            </div>
-        '
-    ])
+        <x-crm.select-filter
+            name="source"
+            label="Source"
+            default="All Sources"
+            :options="$sources"
+            class="col-md-2"
+        />
+    </x-crm.search-form>
+
 
 
     <div class="card shadow-sm">
