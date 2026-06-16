@@ -26,6 +26,10 @@
                     <strong>Import Accounts</strong>
                 </div>
 
+                <a href="{{ route('imports.templates.accounts') }}" class="btn btn-outline-success w-100 mb-3">
+                    Download Accounts Template
+                </a>
+
                 <div class="card-body">
                     <p class="text-muted small">
                         Required header: name. Optional: industry, website, phone, email, description.
@@ -50,6 +54,10 @@
                     <strong>Import Contacts</strong>
                 </div>
 
+                <a href="{{ route('imports.templates.contacts') }}" class="btn btn-outline-success w-100 mb-3">
+                    Download Contacts Template
+                </a>
+
                 <div class="card-body">
                     <p class="text-muted small">
                         Required headers: first_name, last_name. Optional: account_email, email, title, phone, mobile, department, notes.
@@ -73,6 +81,10 @@
                 <div class="card-header bg-white">
                     <strong>Import Leads</strong>
                 </div>
+
+                <a href="{{ route('imports.templates.leads') }}" class="btn btn-outline-success w-100 mb-3">
+                    Download Leads Template
+                </a>
 
                 <div class="card-body">
                     <p class="text-muted small">

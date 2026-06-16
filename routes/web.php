@@ -140,6 +140,15 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/imports/leads', [CrmImportController::class, 'leads'])
         ->name('imports.leads');
 
+    Route::get('/imports/templates/accounts', [CrmImportController::class, 'accountTemplate'])
+        ->name('imports.templates.accounts');
+
+    Route::get('/imports/templates/contacts', [CrmImportController::class, 'contactTemplate'])
+        ->name('imports.templates.contacts');
+
+    Route::get('/imports/templates/leads', [CrmImportController::class, 'leadTemplate'])
+        ->name('imports.templates.leads');
+
 });
 
 require __DIR__.'/auth.php';
