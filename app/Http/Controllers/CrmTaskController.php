@@ -11,13 +11,20 @@ class CrmTaskController extends Controller
 {
     public function index()
     {
-        $tasks = CrmTask::latest()
+        $tasks = CrmTask::with(['owner', 'salesTeam', 'taskable'])
             ->when(request()->boolean('mine'), function ($query) {
                 $query->where('user_id', Auth::id());
             })
+            ->when(request()->filled('sales_team_id'), function ($query) {
+                $query->where('sales_team_id', request()->sales_team_id);
+            })
             ->paginate(15);
 
-        return view('crm_tasks.index', compact('tasks'));
+        $salesTeams = SalesTeam::where('is_active', true)
+            ->orderBy('name')
+            ->get();
+
+        return view('crm_tasks.index', compact('tasks', 'salesTeams'));
     }
 
     public function create()

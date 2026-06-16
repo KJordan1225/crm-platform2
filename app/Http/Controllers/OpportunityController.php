@@ -4,15 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Models\Account;
 use App\Models\Opportunity;
-use App\Models\SalesTeam;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\SalesTeam;
+
 
 class OpportunityController extends Controller
 {
     public function index(Request $request)
     {
-        $opportunities = Opportunity::with('account')
+        $opportunities = Opportunity::with(['account', 'owner', 'salesTeam'])
             ->when($request->filled('search'), function ($query) use ($request) {
                 $search = $request->search;
 
@@ -23,6 +24,9 @@ class OpportunityController extends Controller
                             $accountQuery->where('name', 'like', "%{$search}%");
                         });
                 });
+            })
+            ->when($request->filled('sales_team_id'), function ($query) use ($request) {
+                $query->where('sales_team_id', $request->sales_team_id);
             })
             ->when($request->filled('stage'), function ($query) use ($request) {
                 $query->where('stage', $request->stage);
@@ -44,17 +48,22 @@ class OpportunityController extends Controller
             'Closed Lost',
         ];
 
-        return view('opportunities.index', compact('opportunities', 'stages'));
-    }
+        $salesTeams = SalesTeam::where('is_active', true)
+            ->orderBy('name')
+            ->get();
 
+        return view('opportunities.index', compact(
+            'opportunities',
+            'stages',
+            'salesTeams'
+        ));
+    }
 
     public function create()
     {
         $accounts = Account::orderBy('name')->get();
-        $salesTeams = SalesTeam::where('is_active', true)->orderBy('name')->get();
 
-
-        return view('opportunities.create', compact('accounts', 'salesTeams'));
+        return view('opportunities.create', compact('accounts'));
     }
 
     public function store(Request $request)
@@ -70,7 +79,7 @@ class OpportunityController extends Controller
             'description' => ['nullable', 'string'],
         ]);
 
-           $validated['user_id'] = Auth::id();
+        $validated['user_id'] = auth()->id;
 
         Opportunity::create($validated);
 
@@ -90,15 +99,13 @@ class OpportunityController extends Controller
 
         return view('opportunities.show', compact('opportunity'));
     }
-    
+
 
     public function edit(Opportunity $opportunity)
     {
         $accounts = Account::orderBy('name')->get();
 
-        $salesTeams = SalesTeam::where('is_active', true)->orderBy('name')->get();
-
-        return view('opportunities.edit', compact('opportunity', 'accounts', 'salesTeams'));
+        return view('opportunities.edit', compact('opportunity', 'accounts'));
     }
 
     public function update(Request $request, Opportunity $opportunity)

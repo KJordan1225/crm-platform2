@@ -7,24 +7,59 @@ use Illuminate\Http\Request;
 
 class CrmNoteController extends Controller
 {
-    public function store(Request $request)
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
     {
-        $validated = $request->validate([
-            'noteable_type' => ['required', 'string'],
-            'noteable_id' => ['required', 'integer'],
-            'title' => ['nullable', 'string', 'max:255'],
-            'body' => ['required', 'string'],
-        ]);
-
-        CrmNote::create($validated);
-
-        return back()->with('success', 'Note added successfully.');
+        //
     }
 
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        //
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(CrmNote $crmNote)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(CrmNote $crmNote)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, CrmNote $crmNote)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
     public function destroy(CrmNote $crmNote)
     {
-        $crmNote->delete();
-
-        return back()->with('success', 'Note deleted successfully.');
+        //
     }
 }

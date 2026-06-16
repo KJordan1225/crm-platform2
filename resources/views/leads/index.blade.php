@@ -22,12 +22,18 @@
             :options="$statuses"
             class="col-md-2"
         />
-
         <x-crm.select-filter
             name="source"
             label="Source"
             default="All Sources"
             :options="$sources"
+            class="col-md-2"
+        />
+        <x-crm.select-filter
+            name="sales_team_id"
+            label="Sales Team"
+            default="All Teams"
+            :options="$salesTeams->pluck('name', 'id')"
             class="col-md-2"
         />
 
@@ -61,6 +67,7 @@
                         <th>Source</th>
                         <th>Estimated Value</th>
                         <th>Owner</th>
+                        <th>Team</th>
                         <th width="320">Actions</th>
                     </tr>
                 </thead>
@@ -75,6 +82,7 @@
                             <td>{{ $lead->source }}</td>
                             <td>${{ number_format($lead->estimated_value, 2) }}</td>
                             <td>{{ $lead->owner->name ?? 'None' }}</td>
+                            <td>{{ $lead->salesTeam->name ?? 'None' }}</td>
                             <td>
                                 <a href="{{ route('leads.show', $lead) }}" class="btn btn-sm btn-info">View</a>
                                 <a href="{{ route('leads.edit', $lead) }}" class="btn btn-sm btn-warning">Edit</a>

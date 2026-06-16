@@ -22,7 +22,13 @@
             :options="$accounts->pluck('name', 'id')"
             class="col-md-4"
         />
-
+        <x-crm.select-filter
+            name="sales_team_id"
+            label="Sales Team"
+            default="All Teams"
+            :options="$salesTeams->pluck('name', 'id')"
+            class="col-md-2"
+        />
         <div class="col-md-2">
             <div class="form-check mt-4">
                 <input type="checkbox"
@@ -52,6 +58,7 @@
                         <th>Email</th>
                         <th>Phone</th>
                         <th>Owner</th>
+                        <th>Team</th>
                         <th width="220">Actions</th>
                     </tr>
                 </thead>
@@ -63,6 +70,7 @@
                             <td>{{ $contact->email }}</td>
                             <td>{{ $contact->phone }}</td>
                             <td>{{ $contact->owner->name ?? 'None' }}</td>
+                            <td>{{ $contact->salesTeam->name ?? 'None' }}</td>
                             <td>
                                 <a href="{{ route('contacts.show', $contact) }}" class="btn btn-sm btn-info">View</a>
                                 <a href="{{ route('contacts.edit', $contact) }}" class="btn btn-sm btn-warning">Edit</a>

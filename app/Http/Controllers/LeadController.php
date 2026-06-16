@@ -15,7 +15,13 @@ class LeadController extends Controller
 {
     public function index(Request $request)
     {
-        $leads = Lead::query()
+        $leads = Lead::with(['owner', 'salesTeam'])
+            ->when($request->boolean('mine'), function ($query) {
+                $query->where('user_id', Auth::id());
+            })
+            ->when($request->filled('sales_team_id'), function ($query) use ($request) {
+                $query->where('sales_team_id', $request->sales_team_id);
+            })
             ->when($request->filled('search'), function ($query) use ($request) {
                 $search = $request->search;
 
@@ -33,9 +39,6 @@ class LeadController extends Controller
             ->when($request->filled('source'), function ($query) use ($request) {
                 $query->where('source', $request->source);
             })
-            ->when($request->boolean('mine'), function ($query) {
-                $query->where('user_id', Auth::id());
-            })
             ->latest()
             ->paginate(10)
             ->withQueryString();
@@ -52,7 +55,11 @@ class LeadController extends Controller
             'Other',
         ];
 
-        return view('leads.index', compact('leads', 'statuses', 'sources'));
+        $salesTeams = SalesTeam::where('is_active', true)
+            ->orderBy('name')
+            ->get();
+
+        return view('leads.index', compact('leads', 'statuses', 'sources', 'salesTeams'));
     }
 
     public function create()

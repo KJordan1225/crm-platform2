@@ -22,6 +22,13 @@
             :options="$stages"
             class="col-md-4"
         />
+        <x-crm.select-filter
+            name="sales_team_id"
+            label="Sales Team"
+            default="All Teams"
+            :options="$salesTeams->pluck('name', 'id')"
+            class="col-md-2"
+        />
 
         <div class="col-md-2">
             <div class="form-check mt-4">
@@ -54,6 +61,7 @@
                         <th>Probability</th>
                         <th>Close Date</th>
                         <th>Owner</th>
+                        <th>Team</th>
                         <th width="220">Actions</th>
                     </tr>
                 </thead>
@@ -69,6 +77,7 @@
                             <td>{{ $opportunity->probability }}%</td>
                             <td>{{ $opportunity->close_date }}</td>
                             <td>{{ $opportunity->owner->name ?? 'None' }}</td>
+                            <td>{{ $opportunity->salesTeam->name ?? 'None' }}</td>
                             <td>
                                 <a href="{{ route('opportunities.show', $opportunity) }}" class="btn btn-sm btn-info">View</a>
                                 <a href="{{ route('opportunities.edit', $opportunity) }}" class="btn btn-sm btn-warning">Edit</a>

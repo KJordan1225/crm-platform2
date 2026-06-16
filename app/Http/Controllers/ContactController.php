@@ -12,7 +12,7 @@ class ContactController extends Controller
 {
     public function index(Request $request)
     {
-        $contacts = Contact::with('account')
+        $contacts = Contact::with(['account', 'owner', 'salesTeam'])
             ->when($request->filled('search'), function ($query) use ($request) {
                 $search = $request->search;
 
@@ -27,6 +27,9 @@ class ContactController extends Controller
             ->when($request->filled('account_id'), function ($query) use ($request) {
                 $query->where('account_id', $request->account_id);
             })
+            ->when($request->filled('sales_team_id'), function ($query) use ($request) {
+                $query->where('sales_team_id', $request->sales_team_id);
+            })
             ->when($request->boolean('mine'), function ($query) {
                 $query->where('user_id', Auth::id());
             })
@@ -36,7 +39,11 @@ class ContactController extends Controller
 
         $accounts = Account::orderBy('name')->get();
 
-        return view('contacts.index', compact('contacts', 'accounts'));
+        $salesTeams = SalesTeam::where('is_active', true)
+            ->orderBy('name')
+            ->get();
+
+        return view('contacts.index', compact('contacts', 'accounts', 'salesTeams'));
     }
 
 

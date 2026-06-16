@@ -7,11 +7,12 @@ use App\Models\SalesTeam;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+
 class AccountController extends Controller
 {
     public function index(Request $request)
     {
-        $accounts = Account::query()
+        $accounts = Account::with(['owner', 'salesTeam'])
             ->when($request->filled('search'), function ($query) use ($request) {
                 $search = $request->search;
 
@@ -25,6 +26,9 @@ class AccountController extends Controller
             ->when($request->filled('industry'), function ($query) use ($request) {
                 $query->where('industry', $request->industry);
             })
+            ->when($request->filled('sales_team_id'), function ($query) use ($request) {
+                $query->where('sales_team_id', $request->sales_team_id);
+            })
             ->when($request->boolean('mine'), function ($query) {
                 $query->where('user_id', Auth::id());
             })
@@ -37,7 +41,11 @@ class AccountController extends Controller
             ->orderBy('industry')
             ->pluck('industry');
 
-        return view('accounts.index', compact('accounts', 'industries'));
+        $salesTeams = SalesTeam::where('is_active', true)
+            ->orderBy('name')
+            ->get();
+
+        return view('accounts.index', compact('accounts', 'industries', 'salesTeams'));
     }
 
 

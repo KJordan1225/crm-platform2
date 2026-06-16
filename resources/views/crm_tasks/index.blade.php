@@ -28,6 +28,7 @@
                         <th>Due Date</th>
                         <th>Related To</th>
                         <th>Owner</th>
+                        <th>Team</th>
                         <th width="260">Actions</th>
                     </tr>
                 </thead>
@@ -49,6 +50,7 @@
                                     General
                                 @endif
                             </td>
+                            <td>{{ $task->salesTeam->name ?? 'None' }}</td>
                             <td>{{ $task->owner->name ?? 'None' }}</td>
                                 <a href="{{ route('crm-tasks.show', $task) }}" class="btn btn-sm btn-info">View</a>
                                 <a href="{{ route('crm-tasks.edit', $task) }}" class="btn btn-sm btn-warning">Edit</a>
