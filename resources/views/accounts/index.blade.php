@@ -5,6 +5,9 @@
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h1>Accounts</h1>
         <a href="{{ route('accounts.create') }}" class="btn btn-primary">New Account</a>
+        <a href="{{ route('exports.accounts') }}" class="btn btn-outline-success">
+            Export CSV
+        </a>
     </div>
 
     @if(session('success'))

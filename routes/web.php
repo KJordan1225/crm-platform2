@@ -20,6 +20,8 @@ use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\GlobalSearchController;
+use App\Http\Controllers\CrmExportController;
+
 
 
 Route::get('/', function () {
@@ -115,6 +117,16 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/search', [GlobalSearchController::class, 'index'])
         ->name('search.index');
+
+    Route::prefix('exports')->name('exports.')->group(function () {
+        Route::get('/accounts', [CrmExportController::class, 'accounts'])->name('accounts');
+        Route::get('/contacts', [CrmExportController::class, 'contacts'])->name('contacts');
+        Route::get('/leads', [CrmExportController::class, 'leads'])->name('leads');
+        Route::get('/opportunities', [CrmExportController::class, 'opportunities'])->name('opportunities');
+        Route::get('/quotes', [CrmExportController::class, 'quotes'])->name('quotes');
+        Route::get('/invoices', [CrmExportController::class, 'invoices'])->name('invoices');
+        Route::get('/payments', [CrmExportController::class, 'payments'])->name('payments');
+    });
 });
 
 require __DIR__.'/auth.php';
