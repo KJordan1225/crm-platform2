@@ -10,6 +10,8 @@ use App\Models\SalesTeam;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Models\User;
+use App\Notifications\NewLeadNotification;
 
 class LeadController extends Controller
 {
@@ -85,7 +87,11 @@ class LeadController extends Controller
 
         $validated['user_id'] = Auth::id();
 
-        Lead::create($validated);
+        $lead = Lead::create($validated);
+
+        if ($lead->owner) {
+            $lead->owner->notify(new NewLeadNotification($lead));
+        }
 
         return redirect()
             ->route('leads.index')

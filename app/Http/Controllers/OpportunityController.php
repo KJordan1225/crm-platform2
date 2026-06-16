@@ -7,6 +7,8 @@ use App\Models\Opportunity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\SalesTeam;
+use App\Notifications\OpportunityAssignedNotification;
+
 
 
 class OpportunityController extends Controller
@@ -79,9 +81,13 @@ class OpportunityController extends Controller
             'description' => ['nullable', 'string'],
         ]);
 
-        $validated['user_id'] = auth()->id;
+        $validated['user_id'] = Auth::id();
 
-        Opportunity::create($validated);
+        $opportunity = Opportunity::create($validated);
+
+        if ($opportunity->owner) {
+            $opportunity->owner->notify(new OpportunityAssignedNotification($opportunity));
+        }
 
         return redirect()
             ->route('opportunities.index')

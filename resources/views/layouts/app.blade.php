@@ -189,6 +189,17 @@
             Sales Teams
         </a>
 
+        <a href="{{ route('notifications.index') }}" class="{{ request()->routeIs('notifications.*') ? 'active' : '' }}">
+            Notifications
+            @auth
+                @if(auth()->user()->unreadNotifications()->count() > 0)
+                    <span class="badge bg-danger">
+                        {{ auth()->user()->unreadNotifications()->count() }}
+                    </span>
+                @endif
+            @endauth
+        </a>
+
         <form method="POST" action="{{ route('logout') }}" class="mt-4">
             @csrf
             <button class="btn btn-outline-light w-100">

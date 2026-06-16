@@ -15,6 +15,7 @@ use App\Models\Lead;
 use App\Models\Opportunity;
 use App\Models\CrmTask;
 
+
 #[Fillable(['name', 'email', 'password'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable

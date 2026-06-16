@@ -1,28 +1,29 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AccountController;
-use App\Http\Controllers\ContactController;
-use App\Http\Controllers\LeadController;
-use App\Http\Controllers\OpportunityController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\CrmTaskController;
-use App\Http\Controllers\CrmNoteController;
-use App\Http\Controllers\CrmActivityController;
 use App\Http\Controllers\CampaignController;
 use App\Http\Controllers\CampaignMemberController;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\PriceBookController;
-use App\Http\Controllers\QuoteController;
-use App\Http\Controllers\SalesOrderController;
-use App\Http\Controllers\InvoiceController;
-use App\Http\Controllers\PaymentController;
-use App\Http\Controllers\ReportController;
-use App\Http\Controllers\GlobalSearchController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\CrmActivityController;
 use App\Http\Controllers\CrmExportController;
 use App\Http\Controllers\CrmImportController;
+use App\Http\Controllers\CrmNoteController;
+use App\Http\Controllers\CrmTaskController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\GlobalSearchController;
+use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\LeadController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\OpportunityController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\PriceBookController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\QuoteController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\SalesOrderController;
 use App\Http\Controllers\SalesTeamController;
+use Illuminate\Support\Facades\Route;
 
 
 Route::get('/', function () {
@@ -157,6 +158,15 @@ Route::middleware(['auth'])->group(function () {
         ->name('sales-team-members.destroy');
 
     Route::resource('sales-teams', SalesTeamController::class);
+
+    Route::get('/notifications', [NotificationController::class, 'index'])
+        ->name('notifications.index');
+
+    Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])
+        ->name('notifications.read');
+
+    Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead'])
+        ->name('notifications.read-all');
 
 });
 
