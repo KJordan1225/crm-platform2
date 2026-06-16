@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\User;
 
 class Account extends Model
 {
@@ -21,6 +22,7 @@ class Account extends Model
         'billing_zip',
         'billing_country',
         'description',
+        'user_id',
     ];
 
     public function contacts()
@@ -66,5 +68,10 @@ class Account extends Model
     public function payments()
     {
         return $this->hasMany(Payment::class);
+    }
+
+    public function owner()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

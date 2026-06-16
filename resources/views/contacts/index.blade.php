@@ -22,6 +22,22 @@
             :options="$accounts->pluck('name', 'id')"
             class="col-md-4"
         />
+
+        <div class="col-md-2">
+            <div class="form-check mt-4">
+                <input type="checkbox"
+                    name="mine"
+                    value="1"
+                    class="form-check-input"
+                    id="mine"
+                    @checked(request()->boolean('mine'))>
+
+                <label for="mine" class="form-check-label">
+                    My Records
+                </label>
+            </div>
+        </div>
+
     </x-crm.search-form>
 
 
@@ -35,6 +51,7 @@
                         <th>Account</th>
                         <th>Email</th>
                         <th>Phone</th>
+                        <th>Owner</th>
                         <th width="220">Actions</th>
                     </tr>
                 </thead>
@@ -45,6 +62,7 @@
                             <td>{{ $contact->account?->name ?? 'None' }}</td>
                             <td>{{ $contact->email }}</td>
                             <td>{{ $contact->phone }}</td>
+                            <td>{{ $contact->owner->name ?? 'None' }}</td>
                             <td>
                                 <a href="{{ route('contacts.show', $contact) }}" class="btn btn-sm btn-info">View</a>
                                 <a href="{{ route('contacts.edit', $contact) }}" class="btn btn-sm btn-warning">Edit</a>

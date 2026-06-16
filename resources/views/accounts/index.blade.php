@@ -24,6 +24,21 @@
             :options="$industries"
             class="col-md-4"
         />
+        <div class="col-md-2">
+            <div class="form-check mt-4">
+                <input type="checkbox"
+                    name="mine"
+                    value="1"
+                    class="form-check-input"
+                    id="mine"
+                    @checked(request()->boolean('mine'))>
+
+                <label for="mine" class="form-check-label">
+                    My Records
+                </label>
+            </div>
+        </div>
+
     </x-crm.search-form>
 
     <div class="card shadow-sm">
@@ -35,6 +50,7 @@
                         <th>Industry</th>
                         <th>Email</th>
                         <th>Phone</th>
+                        <th>Owner</th>
                         <th width="220">Actions</th>
                     </tr>
                 </thead>
@@ -45,7 +61,8 @@
                             <td>{{ $account->industry }}</td>
                             <td>{{ $account->email }}</td>
                             <td>{{ $account->phone }}</td>
-                            <td>
+                            <td>{{ $account->owner->name ?? 'None' }}</td>
+                            <td>    
                                 <a href="{{ route('accounts.show', $account) }}" class="btn btn-sm btn-info">View</a>
                                 <a href="{{ route('accounts.edit', $account) }}" class="btn btn-sm btn-warning">Edit</a>
 

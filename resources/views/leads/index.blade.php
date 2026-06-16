@@ -30,6 +30,22 @@
             :options="$sources"
             class="col-md-2"
         />
+
+        <div class="col-md-2">
+            <div class="form-check mt-4">
+                <input type="checkbox"
+                    name="mine"
+                    value="1"
+                    class="form-check-input"
+                    id="mine"
+                    @checked(request()->boolean('mine'))>
+
+                <label for="mine" class="form-check-label">
+                    My Records
+                </label>
+            </div>
+        </div>
+
     </x-crm.search-form>
 
 
@@ -44,6 +60,7 @@
                         <th>Status</th>
                         <th>Source</th>
                         <th>Estimated Value</th>
+                        <th>Owner</th>
                         <th width="320">Actions</th>
                     </tr>
                 </thead>
@@ -57,6 +74,7 @@
                             </td>
                             <td>{{ $lead->source }}</td>
                             <td>${{ number_format($lead->estimated_value, 2) }}</td>
+                            <td>{{ $lead->owner->name ?? 'None' }}</td>
                             <td>
                                 <a href="{{ route('leads.show', $lead) }}" class="btn btn-sm btn-info">View</a>
                                 <a href="{{ route('leads.edit', $lead) }}" class="btn btn-sm btn-warning">Edit</a>

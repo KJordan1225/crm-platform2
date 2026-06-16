@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\User;
 
 class Opportunity extends Model
 {
@@ -18,6 +19,7 @@ class Opportunity extends Model
         'close_date',
         'source',
         'description',
+        'user_id',
     ];
 
     public function account()
@@ -43,5 +45,10 @@ class Opportunity extends Model
     public function quotes()
     {
         return $this->hasMany(Quote::class);
+    }
+
+    public function owner()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

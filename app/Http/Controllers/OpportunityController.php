@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Account;
 use App\Models\Opportunity;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class OpportunityController extends Controller
 {
@@ -24,6 +25,9 @@ class OpportunityController extends Controller
             })
             ->when($request->filled('stage'), function ($query) use ($request) {
                 $query->where('stage', $request->stage);
+            })
+            ->when($request->boolean('mine'), function ($query) {
+                $query->where('user_id', Auth::id());
             })
             ->latest()
             ->paginate(10)
@@ -62,6 +66,8 @@ class OpportunityController extends Controller
             'source' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
         ]);
+
+        $validated['user_id'] = auth()->id;
 
         Opportunity::create($validated);
 

@@ -9,6 +9,11 @@ use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Models\Account;
+use App\Models\Contact;
+use App\Models\Lead;
+use App\Models\Opportunity;
+use App\Models\CrmTask;
 
 #[Fillable(['name', 'email', 'password'])]
 #[Hidden(['password', 'remember_token'])]
@@ -28,5 +33,30 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function accounts()
+    {
+        return $this->hasMany(Account::class);
+    }
+
+    public function contacts()
+    {
+        return $this->hasMany(Contact::class);
+    }
+
+    public function leads()
+    {
+        return $this->hasMany(Lead::class);
+    }
+
+    public function opportunities()
+    {
+        return $this->hasMany(Opportunity::class);
+    }
+
+    public function crmTasks()
+    {
+        return $this->hasMany(CrmTask::class);
     }
 }

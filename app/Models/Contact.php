@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\User;
 
 class Contact extends Model
 {
@@ -19,6 +20,7 @@ class Contact extends Model
         'mobile',
         'department',
         'notes',
+        'user_id',
     ];
 
     public function account()
@@ -64,5 +66,10 @@ class Contact extends Model
     public function invoices()
     {
         return $this->hasMany(Invoice::class);
+    }
+
+    public function owner()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

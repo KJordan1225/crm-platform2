@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Lead;
 use App\Models\Account;
 use App\Models\Contact;
+use App\Models\Lead;
 use App\Models\Opportunity;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class LeadController extends Controller
@@ -30,6 +31,9 @@ class LeadController extends Controller
             })
             ->when($request->filled('source'), function ($query) use ($request) {
                 $query->where('source', $request->source);
+            })
+            ->when($request->boolean('mine'), function ($query) {
+                $query->where('user_id', Auth::id());
             })
             ->latest()
             ->paginate(10)
@@ -69,6 +73,8 @@ class LeadController extends Controller
             'estimated_value' => ['nullable', 'numeric', 'min:0'],
             'notes' => ['nullable', 'string'],
         ]);
+
+        $validated['user_id'] = auth()->id;
 
         Lead::create($validated);
 

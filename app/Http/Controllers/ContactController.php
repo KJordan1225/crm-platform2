@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Account;
 use App\Models\Contact;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ContactController extends Controller
 {
@@ -24,6 +25,9 @@ class ContactController extends Controller
             })
             ->when($request->filled('account_id'), function ($query) use ($request) {
                 $query->where('account_id', $request->account_id);
+            })
+            ->when($request->boolean('mine'), function ($query) {
+                $query->where('user_id', Auth::id());
             })
             ->latest()
             ->paginate(10)
@@ -55,6 +59,8 @@ class ContactController extends Controller
             'department' => ['nullable', 'string', 'max:255'],
             'notes' => ['nullable', 'string'],
         ]);
+
+        $validated['user_id'] = auth()->id;
 
         Contact::create($validated);
 

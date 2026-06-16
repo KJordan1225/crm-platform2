@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Account;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AccountController extends Controller
 {
@@ -22,6 +23,9 @@ class AccountController extends Controller
             })
             ->when($request->filled('industry'), function ($query) use ($request) {
                 $query->where('industry', $request->industry);
+            })
+            ->when($request->boolean('mine'), function ($query) {
+                $query->where('user_id', Auth::id());
             })
             ->latest()
             ->paginate(10)
@@ -51,6 +55,8 @@ class AccountController extends Controller
             'email' => ['nullable', 'email', 'max:255'],
             'description' => ['nullable', 'string'],
         ]);
+
+        $validated['user_id'] = auth()->id;
 
         Account::create($validated);
 

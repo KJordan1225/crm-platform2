@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\User;
 
 class CrmTask extends Model
 {
@@ -18,6 +19,7 @@ class CrmTask extends Model
         'priority',
         'due_date',
         'completed_at',
+        'user_id',
     ];
 
     protected $casts = [
@@ -36,5 +38,10 @@ class CrmTask extends Model
             'status' => 'Completed',
             'completed_at' => now(),
         ]);
+    }
+
+    public function owner()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

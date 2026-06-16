@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\User;
 
 class Lead extends Model
 {
@@ -20,6 +21,7 @@ class Lead extends Model
         'industry',
         'estimated_value',
         'notes',
+        'user_id',
     ];
 
     public function getFullNameAttribute()
@@ -45,5 +47,10 @@ class Lead extends Model
     public function campaignMemberships()
     {
         return $this->morphMany(CampaignMember::class, 'memberable');
+    }
+
+    public function owner()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

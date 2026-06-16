@@ -4,12 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Models\CrmTask;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CrmTaskController extends Controller
 {
     public function index()
     {
         $tasks = CrmTask::latest()
+            ->when(request()->boolean('mine'), function ($query) {
+                $query->where('user_id', Auth::id());
+            })
             ->paginate(15);
 
         return view('crm_tasks.index', compact('tasks'));
@@ -31,6 +35,8 @@ class CrmTaskController extends Controller
             'priority' => ['required', 'string', 'max:255'],
             'due_date' => ['nullable', 'date'],
         ]);
+
+        $validated['user_id'] = auth()->id;
 
         CrmTask::create($validated);
 
