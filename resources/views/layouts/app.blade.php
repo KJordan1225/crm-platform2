@@ -181,6 +181,10 @@
             Reports
         </a>
 
+        <a href="{{ route('imports.index') }}" class="{{ request()->routeIs('imports.*') ? 'active' : '' }}">
+            Imports
+        </a>
+
         <form method="POST" action="{{ route('logout') }}" class="mt-4">
             @csrf
             <button class="btn btn-outline-light w-100">

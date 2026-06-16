@@ -21,7 +21,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\GlobalSearchController;
 use App\Http\Controllers\CrmExportController;
-
+use App\Http\Controllers\CrmImportController;
 
 
 Route::get('/', function () {
@@ -127,6 +127,19 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/invoices', [CrmExportController::class, 'invoices'])->name('invoices');
         Route::get('/payments', [CrmExportController::class, 'payments'])->name('payments');
     });
+
+    Route::get('/imports', [CrmImportController::class, 'index'])
+        ->name('imports.index');
+
+    Route::post('/imports/accounts', [CrmImportController::class, 'accounts'])
+        ->name('imports.accounts');
+
+    Route::post('/imports/contacts', [CrmImportController::class, 'contacts'])
+        ->name('imports.contacts');
+
+    Route::post('/imports/leads', [CrmImportController::class, 'leads'])
+        ->name('imports.leads');
+
 });
 
 require __DIR__.'/auth.php';
