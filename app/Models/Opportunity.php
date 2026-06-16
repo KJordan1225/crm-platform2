@@ -20,6 +20,7 @@ class Opportunity extends Model
         'source',
         'description',
         'user_id',
+        'sales_team_id',
     ];
 
     public function account()
@@ -50,5 +51,10 @@ class Opportunity extends Model
     public function owner()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function salesTeam()
+    {
+        return $this->belongsTo(SalesTeam::class);
     }
 }

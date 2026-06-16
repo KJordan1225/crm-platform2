@@ -22,6 +22,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\GlobalSearchController;
 use App\Http\Controllers\CrmExportController;
 use App\Http\Controllers\CrmImportController;
+use App\Http\Controllers\SalesTeamController;
 
 
 Route::get('/', function () {
@@ -148,6 +149,14 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/imports/templates/leads', [CrmImportController::class, 'leadTemplate'])
         ->name('imports.templates.leads');
+
+    Route::post('/sales-teams/{salesTeam}/members', [SalesTeamController::class, 'addMember'])
+        ->name('sales-teams.members.store');
+
+    Route::delete('/sales-team-members/{salesTeamMember}', [SalesTeamController::class, 'removeMember'])
+        ->name('sales-team-members.destroy');
+
+    Route::resource('sales-teams', SalesTeamController::class);
 
 });
 

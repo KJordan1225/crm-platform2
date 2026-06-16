@@ -80,3 +80,17 @@
     <label class="form-label">Description</label>
     <textarea name="description" class="form-control" rows="4">{{ old('description', $opportunity->description ?? '') }}</textarea>
 </div>
+
+<div class="mb-3">
+    <label class="form-label">Sales Team</label>
+    <select name="sales_team_id" class="form-select">
+        <option value="">No Team</option>
+        @foreach($salesTeams as $team)
+            <option value="{{ $team->id }}"
+                @selected(old('sales_team_id', $model->sales_team_id ?? '') == $opportunity->id)>
+                {{ $opportunity->name }}
+            </option>`
+        @endforeach
+    </select>
+</div>
+

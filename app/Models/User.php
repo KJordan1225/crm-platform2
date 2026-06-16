@@ -59,4 +59,22 @@ class User extends Authenticatable
     {
         return $this->hasMany(CrmTask::class);
     }
+
+    public function managedSalesTeams()
+    {
+        return $this->hasMany(SalesTeam::class, 'manager_id');
+    }
+
+    public function salesTeamMemberships()
+    {
+        return $this->hasMany(SalesTeamMember::class);
+    }
+
+    public function salesTeams()
+    {
+        return $this->belongsToMany(SalesTeam::class, 'sales_team_members')
+            ->withPivot(['role', 'joined_at', 'is_active'])
+            ->withTimestamps();
+    }
+
 }

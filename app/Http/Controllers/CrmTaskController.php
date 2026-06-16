@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\CrmTask;
+use App\Models\SalesTeam;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -21,7 +22,9 @@ class CrmTaskController extends Controller
 
     public function create()
     {
-        return view('crm_tasks.create');
+        $salesTeams = SalesTeam::where('is_active', true)->orderBy('name')->get();
+
+        return view('crm_tasks.create', compact('salesTeams'));
     }
 
     public function store(Request $request)
@@ -36,7 +39,7 @@ class CrmTaskController extends Controller
             'due_date' => ['nullable', 'date'],
         ]);
 
-        $validated['user_id'] = auth()->id;
+        $validated['user_id'] = Auth::id();
 
         CrmTask::create($validated);
 
@@ -51,7 +54,8 @@ class CrmTaskController extends Controller
 
     public function edit(CrmTask $crmTask)
     {
-        return view('crm_tasks.edit', compact('crmTask'));
+        $salesTeams = SalesTeam::where('is_active', true)->orderBy('name')->get();
+        return view('crm_tasks.edit', compact('crmTask', 'salesTeams'));
     }
 
     public function update(Request $request, CrmTask $crmTask)

@@ -22,6 +22,7 @@ class Lead extends Model
         'estimated_value',
         'notes',
         'user_id',
+        'sales_team_id',
     ];
 
     public function getFullNameAttribute()
@@ -52,5 +53,10 @@ class Lead extends Model
     public function owner()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function salesTeam()
+    {
+        return $this->belongsTo(SalesTeam::class);
     }
 }

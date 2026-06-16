@@ -6,6 +6,7 @@ use App\Models\Account;
 use App\Models\Contact;
 use App\Models\Lead;
 use App\Models\Opportunity;
+use App\Models\SalesTeam;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -56,7 +57,8 @@ class LeadController extends Controller
 
     public function create()
     {
-        return view('leads.create');
+        $salesTeams = SalesTeam::where('is_active', true)->orderBy('name')->get();
+        return view('leads.create', compact('salesTeams'));
     }
 
     public function store(Request $request)
@@ -74,7 +76,7 @@ class LeadController extends Controller
             'notes' => ['nullable', 'string'],
         ]);
 
-        $validated['user_id'] = auth()->id;
+        $validated['user_id'] = Auth::id();
 
         Lead::create($validated);
 
@@ -97,7 +99,9 @@ class LeadController extends Controller
 
     public function edit(Lead $lead)
     {
-        return view('leads.edit', compact('lead'));
+        $salesTeams = SalesTeam::where('is_active', true)->orderBy('name')->get();
+    
+        return view('leads.edit', compact('lead', 'salesTeams'));
     }
 
     public function update(Request $request, Lead $lead)

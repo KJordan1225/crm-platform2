@@ -72,3 +72,17 @@
     <label class="form-label">Notes</label>
     <textarea name="notes" class="form-control" rows="4">{{ old('notes', $contact->notes ?? '') }}</textarea>
 </div>
+
+<div class="mb-3">
+    <label class="form-label">Sales Team</label>
+    <select name="sales_team_id" class="form-select">
+        <option value="">No Team</option>
+        @foreach($salesTeams as $team)
+            <option value="{{ $team->id }}"
+                @selected(old('sales_team_id', $model->sales_team_id ?? '') == $contact->id)>
+                {{ $contact->name }}
+            </option>
+        @endforeach
+    </select>
+</div>
+

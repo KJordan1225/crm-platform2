@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Account;
 use App\Models\Contact;
+use App\Models\SalesTeam;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -42,8 +43,9 @@ class ContactController extends Controller
     public function create()
     {
         $accounts = Account::orderBy('name')->get();
+        $salesTeams = SalesTeam::where('is_active', true)->orderBy('name')->get();
 
-        return view('contacts.create', compact('accounts'));
+        return view('contacts.create', compact('accounts', 'salesTeams'));
     }
 
     public function store(Request $request)
@@ -60,7 +62,7 @@ class ContactController extends Controller
             'notes' => ['nullable', 'string'],
         ]);
 
-        $validated['user_id'] = auth()->id;
+        $validated['user_id'] = Auth::id();
 
         Contact::create($validated);
 
@@ -84,8 +86,9 @@ class ContactController extends Controller
     public function edit(Contact $contact)
     {
         $accounts = Account::orderBy('name')->get();
-
-        return view('contacts.edit', compact('contact', 'accounts'));
+        $salesTeams = SalesTeam::where('is_active', true)->orderBy('name')->get();
+    
+        return view('contacts.edit', compact('contact', 'accounts', 'salesTeams'));
     }
 
     public function update(Request $request, Contact $contact)

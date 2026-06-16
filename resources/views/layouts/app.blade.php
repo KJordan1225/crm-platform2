@@ -185,6 +185,10 @@
             Imports
         </a>
 
+        <a href="{{ route('sales-teams.index') }}" class="{{ request()->routeIs('sales-teams.*') ? 'active' : '' }}">
+            Sales Teams
+        </a>
+
         <form method="POST" action="{{ route('logout') }}" class="mt-4">
             @csrf
             <button class="btn btn-outline-light w-100">

@@ -20,6 +20,7 @@ class CrmTask extends Model
         'due_date',
         'completed_at',
         'user_id',
+        'sales_team_id',
     ];
 
     protected $casts = [
@@ -43,5 +44,10 @@ class CrmTask extends Model
     public function owner()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function salesTeam()
+    {
+        return $this->belongsTo(SalesTeam::class);
     }
 }

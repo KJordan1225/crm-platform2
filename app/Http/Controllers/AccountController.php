@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Account;
+use App\Models\SalesTeam;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -42,7 +43,9 @@ class AccountController extends Controller
 
     public function create()
     {
-        return view('accounts.create');
+        $salesTeams = SalesTeam::where('is_active', true)->orderBy('name')->get();
+
+        return view('accounts.create', compact('salesTeams'));
     }
 
     public function store(Request $request)
@@ -56,7 +59,7 @@ class AccountController extends Controller
             'description' => ['nullable', 'string'],
         ]);
 
-        $validated['user_id'] = auth()->id;
+        $validated['user_id'] = Auth::id();
 
         Account::create($validated);
 
@@ -81,7 +84,9 @@ class AccountController extends Controller
 
     public function edit(Account $account)
     {
-        return view('accounts.edit', compact('account'));
+        $salesTeams = SalesTeam::where('is_active', true)->orderBy('name')->get();
+    
+        return view('accounts.edit', compact('account', 'salesTeams'));
     }
 
     public function update(Request $request, Account $account)

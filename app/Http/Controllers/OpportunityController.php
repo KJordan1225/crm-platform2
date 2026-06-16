@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Account;
 use App\Models\Opportunity;
+use App\Models\SalesTeam;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -50,8 +51,10 @@ class OpportunityController extends Controller
     public function create()
     {
         $accounts = Account::orderBy('name')->get();
+        $salesTeams = SalesTeam::where('is_active', true)->orderBy('name')->get();
 
-        return view('opportunities.create', compact('accounts'));
+
+        return view('opportunities.create', compact('accounts', 'salesTeams'));
     }
 
     public function store(Request $request)
@@ -67,7 +70,7 @@ class OpportunityController extends Controller
             'description' => ['nullable', 'string'],
         ]);
 
-        $validated['user_id'] = auth()->id;
+           $validated['user_id'] = Auth::id();
 
         Opportunity::create($validated);
 
@@ -87,13 +90,15 @@ class OpportunityController extends Controller
 
         return view('opportunities.show', compact('opportunity'));
     }
-
+    
 
     public function edit(Opportunity $opportunity)
     {
         $accounts = Account::orderBy('name')->get();
 
-        return view('opportunities.edit', compact('opportunity', 'accounts'));
+        $salesTeams = SalesTeam::where('is_active', true)->orderBy('name')->get();
+
+        return view('opportunities.edit', compact('opportunity', 'accounts', 'salesTeams'));
     }
 
     public function update(Request $request, Opportunity $opportunity)

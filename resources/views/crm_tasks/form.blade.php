@@ -54,3 +54,17 @@
 
 <input type="hidden" name="taskable_type" value="{{ old('taskable_type', $crmTask->taskable_type ?? '') }}">
 <input type="hidden" name="taskable_id" value="{{ old('taskable_id', $crmTask->taskable_id ?? '') }}">
+
+<div class="mb-3">
+    <label class="form-label">Sales Team</label>
+    <select name="sales_team_id" class="form-select">
+        <option value="">No Team</option>
+        @foreach($salesTeams as $team)
+            <option value="{{ $team->id }}"
+                @selected(old('sales_team_id', $model->sales_team_id ?? '') == $crmTask->id)>
+                {{ $crmTask->name }}
+            </option>
+        @endforeach
+    </select>
+</div>
+
