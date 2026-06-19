@@ -26,7 +26,7 @@ use App\Http\Controllers\SalesTeamController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EmailTemplateController;
 use App\Http\Controllers\CrmEmailController;
-
+use App\Http\Controllers\CrmSettingController;
 
 Route::get('/', function () {
     return redirect()->route('dashboard');
@@ -180,6 +180,13 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/crm-emails/send', [CrmEmailController::class, 'send'])
         ->name('crm-emails.send');
+
+    Route::get('/crm-settings', [CrmSettingController::class, 'edit'])
+        ->name('crm-settings.edit');
+
+    Route::put('/crm-settings', [CrmSettingController::class, 'update'])
+        ->name('crm-settings.update');
+
 
 });
 

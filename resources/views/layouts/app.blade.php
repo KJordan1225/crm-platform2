@@ -204,6 +204,10 @@
             Email Templates
         </a>
 
+        <a href="{{ route('crm-settings.edit') }}" class="{{ request()->routeIs('crm-settings.*') ? 'active' : '' }}">
+            Settings
+        </a>
+
         <form method="POST" action="{{ route('logout') }}" class="mt-4">
             @csrf
             <button class="btn btn-outline-light w-100">
