@@ -104,6 +104,7 @@ class LeadController extends Controller
             'tasks' => fn ($q) => $q->latest(),
             'notes' => fn ($q) => $q->latest(),
             'activities' => fn ($q) => $q->latest(),
+            'emailLogs' => fn ($q) => $q->latest(),
         ]);
 
         return view('leads.show', compact('lead'));

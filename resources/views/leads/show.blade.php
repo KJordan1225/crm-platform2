@@ -22,4 +22,8 @@
     </div>
 </div>
 @include('crm_shared.related_panel', ['model' => $lead])
+@include('crm_shared.email_history', [
+    'model' => $lead,
+    'emailRoute' => route('leads.email.create', $lead),
+])
 @endsection

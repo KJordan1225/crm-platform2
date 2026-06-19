@@ -21,4 +21,8 @@
     </div>
 </div>
 @include('crm_shared.related_panel', ['model' => $contact])
+@include('crm_shared.email_history', [
+    'model' => $contact,
+    'emailRoute' => route('contacts.email.create', $contact),
+])
 @endsection
