@@ -24,6 +24,8 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SalesOrderController;
 use App\Http\Controllers\SalesTeamController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\EmailTemplateController;
+use App\Http\Controllers\CrmEmailController;
 
 
 Route::get('/', function () {
@@ -167,6 +169,17 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead'])
         ->name('notifications.read-all');
+
+    Route::resource('email-templates', EmailTemplateController::class);
+
+    Route::get('/leads/{lead}/email', [CrmEmailController::class, 'createForLead'])
+        ->name('leads.email.create');
+
+    Route::get('/contacts/{contact}/email', [CrmEmailController::class, 'createForContact'])
+        ->name('contacts.email.create');
+
+    Route::post('/crm-emails/send', [CrmEmailController::class, 'send'])
+        ->name('crm-emails.send');
 
 });
 

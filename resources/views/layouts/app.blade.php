@@ -200,6 +200,10 @@
             @endauth
         </a>
 
+        <a href="{{ route('email-templates.index') }}" class="{{ request()->routeIs('email-templates.*') ? 'active' : '' }}">
+            Email Templates
+        </a>
+
         <form method="POST" action="{{ route('logout') }}" class="mt-4">
             @csrf
             <button class="btn btn-outline-light w-100">

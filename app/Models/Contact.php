@@ -78,4 +78,9 @@ class Contact extends Model
     {
         return $this->belongsTo(SalesTeam::class);
     }
+
+    public function emailLogs()
+    {
+        return $this->morphMany(CrmEmailLog::class, 'emailable');
+    }
 }
