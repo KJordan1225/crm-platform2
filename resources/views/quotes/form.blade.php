@@ -104,7 +104,7 @@
 
 <div class="mb-3">
     <label class="form-label">Terms</label>
-    <textarea name="terms" rows="4" class="form-control">{{ old('terms', $quote->terms ?? '') }}</textarea>
+    <textarea name="terms" rows="4" class="form-control">{{ old('terms', $quote->terms ?? $settings->quote_terms ?? '') }}</textarea>
 </div>
 
 <div class="mb-3">

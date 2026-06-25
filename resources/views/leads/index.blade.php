@@ -7,6 +7,24 @@
         <a href="{{ route('leads.create') }}" class="btn btn-primary">New Lead</a>
     </div>
 
+    @if(auth()->user()->hasPermission('leads.create'))
+        <a href="{{ route('leads.create') }}" class="btn btn-primary">
+            Add Lead
+        </a>
+    @endif    
+
+    @if(auth()->user()->hasPermission('leads.delete'))
+        <form action="{{ route('leads.destroy', $lead) }}" method="POST">
+            @csrf
+            @method('DELETE')
+
+            <button class="btn btn-danger"
+                    onclick="return confirm('Delete this lead?')">
+                Delete
+            </button>
+        </form>
+    @endif
+
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
@@ -85,7 +103,9 @@
                             <td>{{ $lead->salesTeam->name ?? 'None' }}</td>
                             <td>
                                 <a href="{{ route('leads.show', $lead) }}" class="btn btn-sm btn-info">View</a>
-                                <a href="{{ route('leads.edit', $lead) }}" class="btn btn-sm btn-warning">Edit</a>
+                                @if(auth()->user()->hasPermission('leads.edit'))
+                                    <a href="{{ route('leads.edit', $lead) }}" class="btn btn-sm btn-warning">Edit</a>
+                                @endif
 
                                 @if($lead->status !== 'Converted')
                                     <form action="{{ route('leads.convert', $lead) }}" method="POST" class="d-inline">
@@ -96,13 +116,17 @@
                                     </form>
                                 @endif
 
-                                <form action="{{ route('leads.destroy', $lead) }}" method="POST" class="d-inline">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button onclick="return confirm('Delete this lead?')" class="btn btn-sm btn-danger">
-                                        Delete
-                                    </button>
-                                </form>
+                                <@if(auth()->user()->hasPermission('leads.delete'))
+                                    <form action="{{ route('leads.destroy', $lead) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+
+                                        <button class="btn btn-danger"
+                                                onclick="return confirm('Delete this lead?')">
+                                            Delete
+                                        </button>
+                                    </form>
+                                @endif
                             </td>
                         </tr>
                     @empty

@@ -10,6 +10,8 @@ use App\Models\Product;
 use App\Models\Quote;
 use App\Models\QuoteLineItem;
 use Illuminate\Http\Request;
+use App\Models\CrmSetting;
+
 
 class QuoteController extends Controller
 {
@@ -24,6 +26,7 @@ class QuoteController extends Controller
 
     public function create(Request $request)
     {
+        $settings = CrmSetting::current();
         $accounts = Account::orderBy('name')->get();
         $contacts = Contact::orderBy('last_name')->get();
         $opportunities = Opportunity::orderBy('name')->get();
@@ -41,8 +44,10 @@ class QuoteController extends Controller
             'contacts',
             'opportunities',
             'priceBooks',
-            'selectedOpportunity'
+            'selectedOpportunity',
+            'settings'
         ));
+
     }
 
     public function store(Request $request)
@@ -72,7 +77,9 @@ class QuoteController extends Controller
             ->orderBy('name')
             ->get();
 
-        return view('quotes.show', compact('quote', 'products'));
+        $settings = CrmSetting::current();
+
+        return view('quotes.show', compact('quote', 'products', 'settings'));   
     }
 
     public function edit(Quote $quote)
@@ -82,12 +89,15 @@ class QuoteController extends Controller
         $opportunities = Opportunity::orderBy('name')->get();
         $priceBooks = PriceBook::where('is_active', true)->orderBy('name')->get();
 
+        $settings = CrmSetting::current();
+
         return view('quotes.edit', compact(
             'quote',
             'accounts',
             'contacts',
             'opportunities',
-            'priceBooks'
+            'priceBooks',
+            'settings'
         ));
     }
 

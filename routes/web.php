@@ -43,6 +43,9 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->middleware('permission:dashboard.view')
+        ->name('dashboard');
     Route::resource('accounts', AccountController::class);
     Route::resource('contacts', ContactController::class);
     Route::post('/leads/{lead}/convert', [LeadController::class, 'convert'])

@@ -14,6 +14,9 @@ use App\Models\Contact;
 use App\Models\Lead;
 use App\Models\Opportunity;
 use App\Models\CrmTask;
+use App\Models\Role;
+use App\Models\Permission;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 
 #[Fillable(['name', 'email', 'password'])]
@@ -77,5 +80,58 @@ class User extends Authenticatable
             ->withPivot(['role', 'joined_at', 'is_active'])
             ->withTimestamps();
     }
+
+    public function roles(): BelongsToMany
+    {
+        return $this->belongsToMany(Role::class)
+            ->withTimestamps();
+    }
+
+    public function hasRole(string $role): bool
+    {
+        return $this->roles()
+            ->where('slug', $role)
+            ->exists();
+    }
+
+    public function hasAnyRole(array $roles): bool
+    {
+        return $this->roles()
+            ->whereIn('slug', $roles)
+            ->exists();
+    }
+
+    public function permissions()
+    {
+        return Permission::whereHas('roles.users', function ($query) {
+            $query->where('users.id', $this->id);
+        });
+    }
+
+    public function hasPermission(string $permission): bool
+    {
+        return Permission::where('slug', $permission)
+            ->whereHas('roles.users', function ($query) {
+                $query->where('users.id', $this->id);
+            })
+            ->exists();
+    }
+
+    public function assignRole(string $roleSlug): void
+    {
+        $role = Role::where('slug', $roleSlug)->firstOrFail();
+
+        $this->roles()->syncWithoutDetaching([$role->id]);
+    }
+
+    public function removeRole(string $roleSlug): void
+    {
+        $role = Role::where('slug', $roleSlug)->first();
+
+        if ($role) {
+            $this->roles()->detach($role->id);
+        }
+    }
+
 
 }

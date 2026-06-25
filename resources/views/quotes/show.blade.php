@@ -146,7 +146,8 @@
 
                         <div class="mb-3">
                             <label class="form-label">Tax %</label>
-                            <input type="number" step="0.01" name="tax_percent" class="form-control" value="0">
+                            <input type="number" step="0.01" name="tax_percent" class="form-control"
+                                value="{{ $settings->default_tax_percent }}">
                         </div>
 
                         <button class="btn btn-primary w-100">

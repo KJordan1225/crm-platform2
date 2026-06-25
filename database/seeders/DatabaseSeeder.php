@@ -20,6 +20,10 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             CrmSeeder::class,
+            RolePermissionSeeder::class,
         ]);
+       
     }
 }
+
+

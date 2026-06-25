@@ -119,10 +119,13 @@
 </head>
 
 <body>
+@php
+    $crmSettings = \App\Models\CrmSetting::current();
+@endphp
 <div class="crm-wrapper">
     <aside class="crm-sidebar">
         <div class="crm-sidebar-brand">
-            CRM Platform
+            {{ $crmSettings->company_name }}
         </div>
 
         <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'active' : '' }}">

@@ -7,6 +7,7 @@ use App\Models\InvoiceLineItem;
 use App\Models\SalesOrder;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use App\Models\CrmSetting;
 
 class InvoiceController extends Controller
 {
@@ -32,6 +33,8 @@ class InvoiceController extends Controller
     {
         $salesOrder->load('lineItems');
 
+        $settings = CrmSetting::current();
+
         $invoice = Invoice::create([
             'sales_order_id' => $salesOrder->id,
             'quote_id' => $salesOrder->quote_id,
@@ -47,6 +50,7 @@ class InvoiceController extends Controller
             'grand_total' => $salesOrder->grand_total,
             'balance_due' => $salesOrder->grand_total,
             'notes' => 'Created from sales order '.$salesOrder->order_number,
+            'terms' => $settings->invoice_terms,
         ]);
 
         foreach ($salesOrder->lineItems as $line) {
